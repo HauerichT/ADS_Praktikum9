@@ -10,19 +10,40 @@ class Node:
 class HashTable:
     def __init__(self):
         self.hashTable = [None] * 53
+        self.hashValue = 2
 
     def insert(self, key):
-        hashValue = 1
-        if self.hashTable[hashValue] is None:
-            self.hashTable[hashValue] = Node(key)
+        if self.hashTable[self.hashValue] is None:
+            self.hashTable[self.hashValue] = Node(key)
         else:
-            cur = self.hashTable[hashValue]
+            cur = self.hashTable[self.hashValue]
             while cur.next is not None:
                 cur = cur.next
             cur.next = Node(key)
 
+    def get(self, key):
+        cur = self.hashTable[self.hashValue]
+        while cur:
+            if cur.key == key:
+                return cur.key
+            else:
+                cur = cur.next
+        return False
+
     def delete(self, key):
-        print("Delete", key)
+        cur = prev = self.hashTable[self.hashValue]
+        if not cur:
+            return
+        if cur.key == key:
+            self.hashTable[self.hashValue] = cur.next
+        else:
+            cur = cur.next
+            while cur:
+                if cur.key == key:
+                    prev.next = cur.next
+                    break
+                else:
+                    cur, prev = cur.next, prev.next
 
     def printHashTable(self):
         print("\n--- Hash-Tabelle ---")
@@ -82,12 +103,18 @@ if __name__ == '__main__':
 
         if choice == "1":
             record = input("Geben Sie den neuen Datensatz ein: ")
-            ht.insert(record)
-            print("Datensatz wurde hinzugefügt.")
+            if ht.get(record) is False:
+                ht.insert(record)
+                print("Datensatz hinzugefügt.")
+            else:
+                print("Key bereits in Liste gefunden!")
         elif choice == "2":
             record = input("Geben Sie den zu löschenden Datensatz ein (Key): ")
-            ht.delete(record)
-            print("Datensatz wurde gelöscht.")
+            if ht.get(record) is not False:
+                ht.delete(record)
+                print("Datensatz wurde gelöscht.")
+            else:
+                print("Datensatz nicht gefunden!")
         elif choice == "3":
             ht.printHashTable()
         elif choice == "4":
